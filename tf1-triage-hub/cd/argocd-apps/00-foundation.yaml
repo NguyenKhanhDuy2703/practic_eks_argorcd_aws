@@ -8,7 +8,7 @@ metadata:
 spec:
   project: tf1-project
   source:
-    repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+    repoURL: https://github.com/NguyenKhanhDuy2703/practic_eks_argorcd_aws.git
     path: tf1-triage-hub/cd/components/foundation
     targetRevision: main
   destination:

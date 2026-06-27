@@ -19,7 +19,7 @@ spec:
           - $values/tf1-triage-hub/cd/components/observability/prometheus-values.yaml
 
     # Source 2: Định nghĩa kho Git chứa file cấu hình của bạn
-    - repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+    - repoURL: https://github.com/NguyenKhanhDuy2703/practic_eks_argorcd_aws.git
       targetRevision: main
       ref: values # Đặt tên bí danh là 'values' để Source 1 gọi tới
 

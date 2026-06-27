@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+    repoURL: https://github.com/NguyenKhanhDuy2703/practic_eks_argorcd_aws.git
     path: tf1-triage-hub/cd/argocd-apps
     targetRevision: main
   destination:
