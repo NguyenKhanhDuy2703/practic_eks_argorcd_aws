@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tf1-dev-role
+  namespace: tf1-sandbox # QUAN TRỌNG: Chỉ giới hạn trong Sandbox
+rules:
+- apiGroups: ["", "apps", "extensions", "batch"]
+  resources: ["pods", "deployments", "services", "configmaps", "secrets", "jobs", "cronjobs", "ingresses"]
+  verbs: ["create", "update", "patch", "delete", "get", "watch", "list"] # Quyền CRUD
+- apiGroups: [""]
+  resources: ["pods/log", "pods/exec"]
+  verbs: ["get", "create"] # Cấp quyền xem log và chui vào terminal của Pod để debug
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tf1-dev-binding
+  namespace: tf1-sandbox
+subjects:
+- kind: Group
+  name: "tf1-developers" # Gắn quyền này cho nhóm Developer
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: tf1-dev-role
+  apiGroup: rbac.authorization.k8s.io

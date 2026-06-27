@@ -1,0 +1,17 @@
+
+replicaCount: 3
+
+image:
+  tag: "prod-x9y8z7w"
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+env:
+  ENVIRONMENT: "prod"
+  LOG_LEVEL: "error"

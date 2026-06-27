@@ -1,0 +1,38 @@
+# AI IDE and temporary files
+.gemini/
+.system_generated/
+scratch/
+brain/
+
+# Kubernetes/Helm cache
+.kube/
+.helm/
+charts/
+tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl

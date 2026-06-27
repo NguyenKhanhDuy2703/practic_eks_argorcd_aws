@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tf1-sandbox
+  labels:
+    environment: sandbox
+    managed-by: argocd
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tf1-prod
+  labels:
+    environment: production
+    managed-by: argocd

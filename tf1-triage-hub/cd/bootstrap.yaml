@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tf1-root-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+    path: tf1-triage-hub/cd/argocd-apps
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

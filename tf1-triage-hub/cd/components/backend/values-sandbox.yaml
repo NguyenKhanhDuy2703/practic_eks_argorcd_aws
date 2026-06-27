@@ -1,0 +1,20 @@
+
+appName: "be-argocd"
+
+replicaCount: 1
+
+image:
+  tag: "sandbox-a1b2c3d"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  ENVIRONMENT: "sandbox"
+  LOG_LEVEL: "debug"
+  DEBUG_MODE: "true"

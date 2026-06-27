@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: tf1-project
+  namespace: argocd
+spec:
+  description: Project for TF1 Triage Hub Application
+  
+
+  sourceRepos:
+    - "https://github.com/NguyenKhanhDuy2703/pra_eks.git"
+    - "https://open-policy-agent.github.io/gatekeeper/charts"
+    - "https://prometheus-community.github.io/helm-charts"
+  
+  # Cho phép deploy vào mọi namespace trong cluster hiện tại
+  destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+  
+
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

@@ -1,0 +1,46 @@
+# Khởi tạo trực tiếp không cần block trung gian vì ArgoCD kéo thẳng file này đắp vào Helm
+
+# Cấu hình Grafana
+grafana:
+  enabled: true
+  adminPassword: "admin123" # Đặt mật khẩu Admin mặc định
+  
+  # Cho phép hiển thị giao diện qua Ingress nếu cần
+  ingress:
+    enabled: false
+    
+  # Đảm bảo Dashboard không bị mất khi Pod restart
+  persistence:
+    enabled: true
+    type: pvc
+    size: 5Gi
+    storageClassName: gp2 # Thay bằng tên StorageClass của AWS EBS
+
+# Cấu hình Prometheus
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: 15d # Lưu trữ dữ liệu tối đa 15 ngày để tiết kiệm ổ cứng
+    
+    # GIỚI HẠN TÀI NGUYÊN (RẤT QUAN TRỌNG)
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+    # Ổ CỨNG VẬT LÝ LƯU TRỮ METRICS
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi # Xin cấp 1 ổ cứng 20GB của AWS
+
+# Tắt AlertManager nếu bạn chưa cần dùng
+alertmanager:
+  enabled: false

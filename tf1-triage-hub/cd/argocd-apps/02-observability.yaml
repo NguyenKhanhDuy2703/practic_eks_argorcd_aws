@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tf1-observability
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: tf1-project
+  # SỬ DỤNG TÍNH NĂNG MULTIPLE SOURCES CỦA ARGOCD (Từ bản v2.6+)
+  sources:
+    # Source 1: Kéo trực tiếp mã nguồn từ Helm Repo của hãng (Giống Gatekeeper)
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 56.0.0
+      helm:
+        valueFiles:
+          # Chỉ định lấy file cấu hình từ Source 2 (Kho Git của bạn)
+          - $values/tf1-triage-hub/cd/components/observability/prometheus-values.yaml
+
+    # Source 2: Định nghĩa kho Git chứa file cấu hình của bạn
+    - repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+      targetRevision: main
+      ref: values # Đặt tên bí danh là 'values' để Source 1 gọi tới
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

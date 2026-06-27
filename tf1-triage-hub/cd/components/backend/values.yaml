@@ -1,0 +1,26 @@
+
+
+appName: "backend"
+
+replicaCount: 1
+
+image:
+  repository: tf1/ai-engine
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+env:
+  ENVIRONMENT: "default"
+  LOG_LEVEL: "info"

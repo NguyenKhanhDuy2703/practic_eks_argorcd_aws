@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tf1-backend-sandbox
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1" 
+spec:
+  project: tf1-project
+  source:
+    repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+    path: tf1-triage-hub/cd/components/backend
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values-sandbox.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tf1-sandbox 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

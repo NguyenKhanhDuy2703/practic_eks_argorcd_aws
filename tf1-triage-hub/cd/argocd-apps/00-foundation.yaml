@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tf1-foundation
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0" # Foundation chạy đầu tiên
+spec:
+  project: tf1-project
+  source:
+    repoURL: https://github.com/NguyenKhanhDuy2703/pra_eks.git
+    path: tf1-triage-hub/cd/components/foundation
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system # Tùy vào foundation của bạn cài ở đâu
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
