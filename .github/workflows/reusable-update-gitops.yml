@@ -1,0 +1,27 @@
+name: Reusable Update GitOps
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        required: true
+        type: string
+
+jobs:
+  update-gitops:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update tag in values-sandbox.yaml
+        run: |
+          cd tf1-triage-hub/cd/components/backend
+          sed -i "s/  tag: .*/  tag: \"${{ inputs.image_tag }}\"/g" values-sandbox.yaml
+          
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          git add values-sandbox.yaml
+          git commit -m "chore: auto-update image tag to ${{ inputs.image_tag }} [skip ci]"
+          git push origin main
