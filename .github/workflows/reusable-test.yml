@@ -1,0 +1,35 @@
+name: Reusable Test and Lint
+
+on:
+  workflow_call:
+    # Không cần nhận input gì đặc biệt cho phần test này
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: ./app
+        run: |
+          pip install -r requirements.txt
+          echo "Simulating dependency installation..."
+
+      - name: Lint code
+        working-directory: ./app
+        run: |
+          # flake8 .
+          echo "Simulating Syntax Check..."
+
+      - name: Run Tests
+        working-directory: ./app
+        run: |
+          # pytest tests/
+          echo "Simulating Unit Tests..."

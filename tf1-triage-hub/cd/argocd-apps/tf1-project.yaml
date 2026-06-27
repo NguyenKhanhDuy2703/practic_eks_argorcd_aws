@@ -12,12 +12,12 @@ spec:
     - "https://open-policy-agent.github.io/gatekeeper/charts"
     - "https://prometheus-community.github.io/helm-charts"
   
-  # Cho phép deploy vào mọi namespace trong cluster hiện tại
+
   destinations:
-    - namespace: "*"
+    - namespace: "tf1-sandbox"
       server: https://kubernetes.default.svc
   
 
   clusterResourceWhitelist:
     - group: "*"
-      kind: "*"
+      kind: "Namespace"

@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ .Values.appName }}
   labels:
@@ -9,6 +9,19 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.appName }}
+  
+  # Cấu hình chiến lược Canary 25 - 50 - 75 - 100
+  strategy:
+    canary:
+      steps:
+        - setWeight: 25
+        - pause: {duration: 30s}
+        - setWeight: 50
+        - pause: {duration: 30s}
+        - setWeight: 75
+        - pause: {duration: 30s}
+        # Bước cuối cùng 100% sẽ tự động thực hiện sau khi hết 30s của bước 75%
+
   template:
     metadata:
       labels:

@@ -1,0 +1,44 @@
+name: Modular CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'app/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'app/**'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # 1. Gọi module Test & Lint
+  test:
+    uses: ./.github/workflows/reusable-test.yml
+
+  # 2. Gọi module Build & Sign (chỉ chạy khi Test pass)
+  build-and-sign:
+    needs: test
+    uses: ./.github/workflows/reusable-build-sign.yml
+    with:
+      registry: ghcr.io
+      image_name: ${{ github.repository }}
+      image_tag: ${{ github.sha }}
+    # Phải truyền quyền để module con có thể dùng OIDC (Cosign)
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+  # 3. Gọi module Update GitOps (chỉ chạy khi Build pass và là push lên main)
+  update-gitops:
+    needs: build-and-sign
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reusable-update-gitops.yml
+    with:
+      image_tag: ${{ github.sha }}
+    permissions:
+      contents: write

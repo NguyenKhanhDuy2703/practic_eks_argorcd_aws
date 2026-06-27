@@ -1,19 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tf1-foundation
+  name: tf1-rollouts
   namespace: argocd
   annotations:
+    # Cài đặt ở Wave 0, cùng lúc với Foundation và Gatekeeper
     argocd.argoproj.io/sync-wave: "0" 
 spec:
   project: tf1-project
   source:
-    repoURL: https://github.com/NguyenKhanhDuy2703/practic_eks_argorcd_aws.git
-    path: tf1-triage-hub/cd/components/foundation
-    targetRevision: main
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 2.37.2
+    chart: argo-rollouts
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system 
+    namespace: argo-rollouts
   syncPolicy:
     automated:
       prune: true
