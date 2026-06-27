@@ -3,12 +3,9 @@ name: Modular CI/CD Pipeline
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'app/**'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - 'app/**'
+  workflow_dispatch: # Cho phép bấm nút chạy bằng tay trên web
 
 jobs:
   # 1. Gọi module Test & Lint
