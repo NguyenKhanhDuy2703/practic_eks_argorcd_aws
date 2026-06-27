@@ -10,11 +10,6 @@ on:
     paths:
       - 'app/**'
 
-env:
-  REGISTRY: ghcr.io
-  # Docker bắt buộc tên image phải viết thường 100%
-  IMAGE_NAME: nguyenkhanhduy2703/practic_eks_argorcd_aws
-
 jobs:
   # 1. Gọi module Test & Lint
   test:
@@ -26,7 +21,7 @@ jobs:
     uses: ./.github/workflows/reusable-build-sign.yml
     with:
       registry: ghcr.io
-      image_name: ${{ env.IMAGE_NAME }}
+      image_name: nguyenkhanhduy2703/practic_eks_argorcd_aws
       image_tag: ${{ github.sha }}
     # Phải truyền quyền để module con có thể dùng OIDC (Cosign)
     permissions:
