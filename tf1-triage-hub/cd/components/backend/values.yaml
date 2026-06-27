@@ -5,7 +5,7 @@ appName: "backend"
 replicaCount: 1
 
 image:
-  repository: tf1/ai-engine
+  repository: ghcr.io/nguyenkhanhduy2703/practic_eks_argorcd_aws
   tag: "latest"
   pullPolicy: IfNotPresent
 
