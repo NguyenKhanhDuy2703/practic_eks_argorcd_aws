@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/reusable-build-sign.yml
     with:
       registry: ghcr.io
-      image_name: ${{ github.repository }}
+      image_name: ${{ env.IMAGE_NAME }}
       image_tag: ${{ github.sha }}
     # Phải truyền quyền để module con có thể dùng OIDC (Cosign)
     permissions:
