@@ -1,5 +1,45 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.0"
+    }
+  }
+}
+
+
 provider "aws" {
   region = var.region
+}
+
+provider "kubernetes" {
+  host                   = module.compute.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.compute.cluster_certificate_authority_data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--cluster-name", module.compute.cluster_name]
+  }
+}
+
+provider "helm" {
+  kubernetes = {
+    host                   = module.compute.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.compute.cluster_certificate_authority_data)
+    exec = {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--cluster-name", module.compute.cluster_name]
+    }
+  }
 }
 
 module "networking" {
@@ -65,4 +105,10 @@ module "observability" {
   alert_queue_name        = module.integration.alert_queue_name
   alert_dlq_name          = module.integration.alert_dlq_name
   dynamodb_table_name     = module.data.dynamodb_table_name
+}
+
+module "argocd" {
+  source      = "../../modules/argocd"
+  cluster_id  = module.compute.cluster_id
+  environment = var.environment
 }
