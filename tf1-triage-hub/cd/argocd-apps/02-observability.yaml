@@ -4,7 +4,7 @@ metadata:
   name: tf1-observability
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: tf1-project
   # SỬ DỤNG TÍNH NĂNG MULTIPLE SOURCES CỦA ARGOCD (Từ bản v2.6+)

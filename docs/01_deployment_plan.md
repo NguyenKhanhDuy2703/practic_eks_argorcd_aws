@@ -418,21 +418,19 @@ Tất cả các điều kiện sau phải đạt trước khi chuyển sang Mile
 2. **Config Repository** (GitOps manifests):
    ```
    config-repo/
-   ├── argocd/
-   │   ├── app-of-apps.yaml
-   │   └── projects/
-   ├── base/                     # Kustomize base
-   │   ├── namespaces/
-   │   ├── rbac/
-   │   ├── deployments/
-   │   ├── services/
-   │   ├── ingress/
-   │   ├── external-secrets/
-   │   └── network-policies/
-   └── overlays/                 # Kustomize overlays per env
-       ├── sandbox/
-       ├── staging/
-       └── prod/
+   ├── cd/
+   │   ├── argocd-apps/
+   │   │   ├── 00-foundation.yaml
+   │   │   ├── 00-external-secrets.yaml
+   │   │   ├── 01-ai-engine.yaml
+   │   │   └── 02-observability.yaml
+   │   └── components/
+   │       ├── app-chart/            # Generic Helm chart cho microservices
+   │       │   ├── Chart.yaml
+   │       │   ├── values-sandbox.yaml
+   │       │   ├── values-staging.yaml
+   │       │   └── values-prod.yaml
+   │       └── foundation/           # Các K8s manifests cơ bản
    ```
 
 **Kiểm tra**:
@@ -562,11 +560,11 @@ PR opened/updated (terraform/ changed)
    | 3 | AIOps Worker (CDO Correlator) | Cần AI Engine URL |
    | 4 | Observability (Prometheus, Alertmanager, Loki, Grafana), Integration Lambda config | Cuối cùng |
 
-4. **Kustomize Overlays** per environment:
-   - `base/`: deployment template chung
-   - `overlays/sandbox/`: replicas=1, resource limits thấp
-   - `overlays/staging/`: replicas=2, resource limits trung bình
-   - `overlays/prod/`: replicas=2-6 (HPA), resource limits cao, manual sync
+4. **Helm Values** per environment:
+   - Sử dụng thư mục `cd/components/app-chart/` làm Generic Helm Chart.
+   - `values-sandbox.yaml`: replicas=1, resource limits thấp
+   - `values-staging.yaml`: replicas=2, resource limits trung bình
+   - `values-prod.yaml`: replicas=2-6 (HPA), resource limits cao, manual sync
 
 **Kiểm tra**:
 - [ ] ArgoCD UI accessible (port-forward)
