@@ -4,7 +4,7 @@ appName: "be-argocd"
 replicaCount: 1
 
 image:
-  tag: "sandbox-a1b2c3d"
+  tag: "460ff98bf6f6d2a4ef327b15e2e3301082a87f93"
 
 resources:
   requests:
