@@ -45,20 +45,16 @@ ArgoCD phân chia thứ tự cài đặt thông qua annotation `argocd.argoproj.
 
 ## 3. Cách triển khai (How to run)
 
-### Bước 1: Cài đặt ArgoCD lên Cluster
-Đảm bảo bạn đã cài đặt ArgoCD core lên EKS cluster của mình (chỉ làm 1 lần duy nhất):
+### Bước 1: Khởi tạo Hạ tầng và ArgoCD bằng Terraform
+Toàn bộ quá trình cài đặt cụm EKS, ArgoCD và cấu hình GitOps (App of Apps) đã được tự động hóa bằng Terraform. Bạn chỉ cần chạy:
 ```bash
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+cd tf1-triage-hub/tf/environments/sandbox
+terraform init
+terraform apply -auto-approve
 ```
+Sau khi Terraform chạy xong, cluster EKS sẽ có sẵn ArgoCD và tự động đọc cấu hình thư mục `argocd-apps/` để triển khai tuần tự các thành phần mà không cần phải gõ thủ công lệnh `kubectl apply bootstrap.yaml` nữa.
 
-### Bước 2: Kích hoạt luồng GitOps
-Chạy duy nhất lệnh sau từ thư mục gốc của repo:
-```bash
-kubectl apply -f tf1-triage-hub/cd/bootstrap.yaml
-```
-
-### Bước 3: Đăng nhập và kiểm tra trên UI
+### Bước 2: Đăng nhập và kiểm tra trên UI
 Chuyển port để truy cập giao diện ArgoCD:
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443

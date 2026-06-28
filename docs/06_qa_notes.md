@@ -50,3 +50,11 @@ Bởi vì trong source code, chúng ta đang sử dụng tính năng **Managed N
 
 **Vậy tự tạo EC2 bằng tay (Self-managed nodes) được không?**
 Hoàn toàn được! Các hệ thống cũ hoặc có yêu cầu custom HĐH cực kỳ đặc biệt mới dùng cách này. Nhưng ngày nay, 99% các dự án thực tế đều dùng Managed Node Group (như code của bạn) để ủy thác việc bảo trì, vá lỗi HĐH và nâng cấp phiên bản Kubernetes cho AWS lo, giúp kỹ sư DevOps "nhàn" đi rất nhiều.
+
+### Q6: Tại sao các pod Prometheus và Grafana không xuất hiện sau khi apply các cấu hình ban đầu?
+- **Lý do:** Khi khởi tạo cụm EKS mới, ArgoCD chưa được cài đặt mặc định, và file `bootstrap.yaml` chưa được apply. Do dự án sử dụng mô hình "App of Apps", ArgoCD đóng vai trò điều phối trung tâm. Nếu không có nó, các file cấu hình như `02-observability.yaml` (chứa khai báo cài Prometheus/Grafana) sẽ nằm im trong Git mà không bao giờ được thực thi.
+- **Giải pháp:** Phải cài đặt ArgoCD lên cluster và kích hoạt luồng GitOps. Hiện tại, quá trình này đã được **tự động hóa hoàn toàn vào Terraform** thông qua `module.argocd`, giúp loại bỏ việc gõ lệnh `kubectl` thủ công.
+
+### Q7: Lỗi "pod has unbound immediate PersistentVolumeClaims" khi cài đặt Prometheus/Grafana là gì?
+- **Lý do:** Prometheus và Grafana yêu cầu lưu trữ dữ liệu bền vững (Persistent Storage). Tuy nhiên, cụm EKS mặc định đôi khi không gán sẵn StorageClass nào làm mặc định (default). Khi PVC được tạo ra mà không chỉ định `storageClassName`, nó sẽ chờ hệ thống gán một StorageClass mặc định. Việc thiếu SC mặc định làm cho PVC bị kẹt ở trạng thái `Pending` mãi mãi.
+- **Giải pháp:** Tạo một StorageClass sử dụng EBS CSI Driver (ví dụ: `gp3` với provisioner `ebs.csi.aws.com`) và thêm annotation `storageclass.kubernetes.io/is-default-class: "true"`. Các PVC đang kẹt cần được xóa đi để ArgoCD tạo lại, sau đó chúng sẽ tự động nhận StorageClass mới và khởi tạo EBS Volume thành công.

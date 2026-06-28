@@ -62,9 +62,10 @@ Thay vì một file CI khổng lồ, dự án áp dụng mô hình **Reusable Wo
 
 Mọi thứ trong K8s được khai báo (Declarative) ở thư mục `tf1-triage-hub/cd/`.
 
-- **Lệnh Bootstrap Duy Nhất:** `kubectl apply -f bootstrap.yaml`. Từ đây, ArgoCD sẽ tự đẻ ra các tài nguyên khác.
+- **Khởi tạo Toàn Diện Bằng Terraform:** Thay vì phải cài đặt thủ công, việc khởi tạo ArgoCD và Root Application (`bootstrap.yaml`) đã được tự động hóa hoàn toàn thông qua Terraform (`module.argocd`). Khi chạy `terraform apply`, mọi thứ sẽ tự động bung ra.
 - **Wave 0 (Nền móng):** `00-foundation`, `00-gatekeeper` (Bảo vệ K8s bằng luật OPA), và `00-rollouts` (Cài đặt Argo Rollouts Controller).
 - **Wave 1 (Ứng dụng):** `01-backend`. Triển khai Backend.
+- **Wave 4 (Giám sát):** `02-observability`. Triển khai Prometheus và Grafana. Đòi hỏi phải có Default StorageClass (ví dụ `gp3`) để cấp phát đĩa (PVC) thành công.
 
 ---
 
