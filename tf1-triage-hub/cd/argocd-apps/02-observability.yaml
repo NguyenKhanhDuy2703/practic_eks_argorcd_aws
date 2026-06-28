@@ -15,7 +15,6 @@ spec:
       targetRevision: 56.0.0
       helm:
         valueFiles:
-          # Chỉ định lấy file cấu hình từ Source 2 (Kho Git của bạn)
           - $values/tf1-triage-hub/cd/components/observability/prometheus-values.yaml
 
     # Source 2: Định nghĩa kho Git chứa file cấu hình của bạn
