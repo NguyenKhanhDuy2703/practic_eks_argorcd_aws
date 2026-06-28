@@ -4,7 +4,7 @@ appName: "be-argocd"
 replicaCount: 1
 
 image:
-  tag: "411c18a32fd053c7e3b445d0d8ec85aa5e00a36d"
+  tag: "cb7a0d8a9adcd45a21be9467f16466f726eeda18"
 
 resources:
   requests:
