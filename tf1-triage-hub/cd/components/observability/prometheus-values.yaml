@@ -14,7 +14,7 @@ grafana:
     enabled: true
     type: pvc
     size: 5Gi
-    storageClassName: gp2 # Thay bằng tên StorageClass của AWS EBS
+    # storageClassName: gp2 # Thay bằng tên StorageClass của AWS EBS (Comment lại để K8s tự lấy default: Minikube lấy 'standard', EKS lấy 'gp2')
 
 # Cấu hình Prometheus
 prometheus:
@@ -35,7 +35,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: gp2
+          # storageClassName: gp2 # Comment lại để dùng default storage class
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:

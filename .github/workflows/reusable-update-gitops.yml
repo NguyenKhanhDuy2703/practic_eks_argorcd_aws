@@ -16,7 +16,7 @@ jobs:
 
       - name: Update tag in values-sandbox.yaml
         run: |
-          cd tf1-triage-hub/cd/components/backend
+          cd tf1-triage-hub/cd/components/app-chart
           sed -i "s/  tag: .*/  tag: \"${{ inputs.image_tag }}\"/g" values-sandbox.yaml
           
           git config user.name "GitHub Actions Bot"

@@ -4,7 +4,7 @@ metadata:
   name: tf1-observability
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: tf1-project
   # SỬ DỤNG TÍNH NĂNG MULTIPLE SOURCES CỦA ARGOCD (Từ bản v2.6+)
@@ -15,7 +15,6 @@ spec:
       targetRevision: 56.0.0
       helm:
         valueFiles:
-          # Chỉ định lấy file cấu hình từ Source 2 (Kho Git của bạn)
           - $values/tf1-triage-hub/cd/components/observability/prometheus-values.yaml
 
     # Source 2: Định nghĩa kho Git chứa file cấu hình của bạn
