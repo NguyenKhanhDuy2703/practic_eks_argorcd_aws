@@ -523,10 +523,10 @@ PR opened/updated (terraform/ changed)
 > Tham khảo W9 Day 1 — ArgoCD App of Apps đã setup.
 
 **Làm gì**:
-1. **Install ArgoCD** trên EKS (Helm chart):
+1. **Install ArgoCD** trên EKS (đã được tự động hóa qua Terraform `module.argocd`):
    ```bash
-   helm repo add argo https://argoproj.github.io/argo-helm
-   helm install argocd argo/argo-cd -n argocd --create-namespace
+   cd tf1-triage-hub/tf/environments/sandbox
+   terraform apply -auto-approve
    ```
 
 2. **App of Apps** — 1 root Application quản lý tất cả:
