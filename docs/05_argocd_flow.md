@@ -77,3 +77,28 @@ Khi Developer push code mới, luồng tích hợp với ArgoCD sẽ diễn ra n
 1. **Build & Push Image**: GitHub Actions (file `ci-main.yml`) chạy test, build Docker image và đẩy lên GitHub Container Registry (ghcr.io) với tag là mã Git SHA (ví dụ: `abcd123`).
 2. **Update GitOps**: Job `update-gitops` tự động sửa file `values-sandbox.yaml` (hoặc `values-prod.yaml`), cập nhật dòng `image.tag: "abcd123"` và commit thẳng vào repo.
 3. **ArgoCD Sync**: Định kỳ mỗi 3 phút (hoặc trigger ngay qua webhook), ArgoCD phát hiện thay đổi trong file `values-sandbox.yaml`. Nó sẽ lập tức kích hoạt Argo Rollouts để thực hiện chiến lược Canary update cho pod AI Engine mới trên cụm EKS.
+
+---
+
+## 5. Q&A & Giải thích các khái niệm quan trọng (Ghi chú)
+
+Dưới đây là các lưu ý quan trọng được đúc kết trong quá trình cấu hình:
+
+### Q1: Tại sao `00-foundation.yaml` đọc được Constraint/Template còn `00-gatekeeper.yaml` thì không?
+- **`00-gatekeeper.yaml`**: Có nhiệm vụ cài đặt **Phần lõi (Core Engine)** của Gatekeeper. Nó tải mã nguồn trực tiếp từ kho Helm chính thức của hãng (`https://open-policy-agent.github.io/gatekeeper/charts`), do đó nó không biết gì về các chính sách riêng của dự án.
+- **`00-foundation.yaml`**: Trỏ trực tiếp vào thư mục `cd/components/foundation/` trên Git Repo của bạn. Nhờ cơ chế tự động quét đệ quy (recursive) của ArgoCD, nó sẽ chui vào thư mục con `admission-policies/` và apply tất cả các file `ConstraintTemplate` và `Constraint` mà bạn đã định nghĩa vào cluster.
+
+### Q2: Tại sao phải tạo `tf1-project` mà không xài luôn project `default`?
+Mặc định ArgoCD có một project tên là `default` với đặc quyền "Super Admin" (cho phép kéo code từ mọi nơi, deploy vào mọi namespace).
+Tuy nhiên, để đảm bảo bảo mật (Security Guardrails), chúng ta tạo ra một AppProject riêng mang tên **`tf1-project`**. Nó đóng vai trò như một "hàng rào bảo vệ" bằng cách:
+- Chỉ cho phép kéo code từ các kho hợp lệ (`sourceRepos`).
+- Chỉ cho phép deploy vào các namespace được chỉ định rõ ràng (`destinations`).
+
+### Q3: `clusterResourceWhitelist` là gì và tại sao phải đổi thành `kind: "*"`?
+Trong Kubernetes có 2 loại tài nguyên:
+1. **Namespace-scoped**: Nằm trong 1 namespace cụ thể (Pod, Service...).
+2. **Cluster-scoped**: Nằm ở cấp độ toàn cụm (Namespace, CRD, ClusterRole...).
+
+Mặc định, Custom AppProject bị cấm tạo tài nguyên Cluster-scoped để tránh phá hỏng cụm. `clusterResourceWhitelist` là danh sách "mở khóa" các quyền này. 
+- Mặc dù bạn đã dùng cờ `CreateNamespace=true` để ArgoCD tự tạo namespace, nhưng ArgoCD vẫn bị `AppProject` kiểm duyệt. Nếu không whitelist `kind: "Namespace"`, nó sẽ bị chặn.
+- Các công cụ như Gatekeeper, Prometheus... khi cài đặt sẽ đẻ ra rất nhiều tài nguyên hệ thống (CRD, ClusterRole...). Do đó, chúng ta đã sửa thành **`kind: "*"`** để cấp phép cho `tf1-project` được quyền khởi tạo các tài nguyên cấp cụm này, đảm bảo cài đặt không bị lỗi.
